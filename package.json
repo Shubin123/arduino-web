@@ -1,0 +1,39 @@
+{
+  "name": "arduino-web",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Arduino development environment that runs entirely in the browser: edit, compile (WebAssembly GCC) and upload (Web Serial).",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "assets": "node scripts/build-avr-assets.mjs && node scripts/build-examples.mjs",
+    "credits": "node scripts/build-credits.mjs",
+    "build": "npm run credits && vite build",
+    "preview": "vite preview",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "node tests/browser.mjs",
+    "format": "prettier --write web/src scripts tests"
+  },
+  "dependencies": {
+    "@wasm-fmt/clang-format": "23.1.1",
+    "esptool-js": "0.7.0",
+    "jszip": "3.10.1",
+    "monaco-editor": "0.52.2"
+  },
+  "devDependencies": {
+    "@horang-corp/avr-gcc-wasm": "0.2.0",
+    "@playwright/test": "1.56.1",
+    "avr8js": "0.20.1",
+    "prettier": "3.6.2",
+    "vite": "8.3.4"
+  },
+  "author": "Shubin123",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shubin123/arduino-web.git"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

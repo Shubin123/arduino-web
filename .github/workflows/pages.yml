@@ -1,0 +1,57 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: arduino/setup-arduino-cli@v2
+        with:
+          version: 1.5.1
+      - name: Install Arduino AVR Boards 1.8.8
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install arduino:avr@1.8.8
+      - name: Fetch built-in examples
+        run: git clone --depth 1 --branch 1.10.3 https://github.com/arduino/arduino-examples.git examples-reference
+      - name: Build toolchain assets
+        run: |
+          ARDUINO_DIR="${HOME}/.arduino15"
+          export ARDUINO_AVR_CORE="${ARDUINO_DIR}/packages/arduino/hardware/avr/1.8.8"
+          export ARDUINO_AVR_GCC=$(ls -d "${ARDUINO_DIR}/packages/arduino/tools/avr-gcc/"* 2>/dev/null | head -n 1)
+          npm run assets
+      - run: npm test
+      - run: npm run build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

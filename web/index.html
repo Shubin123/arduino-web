@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Write, compile and upload Arduino sketches entirely in the browser." />
+    <title>Arduino Web</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23008184'/%3E%3Cpath d='M9 16a4 4 0 1 0 8 0 4 4 0 1 0 8 0 4 4 0 1 0-8 0 4 4 0 1 0-8 0' fill='none' stroke='white' stroke-width='2.4'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <header class="menubar" id="menubar" role="menubar"></header>
+    <div class="toolbar">
+      <button id="verify" class="round" title="Verify" aria-label="Verify"></button>
+      <button id="upload" class="round" title="Upload" aria-label="Upload"></button>
+      <button id="board-button" class="board-button" aria-haspopup="menu"></button>
+      <div id="progress" class="progress" hidden><span class="spinner"></span><span id="progress-label"></span></div>
+      <span class="spacer"></span>
+      <button id="plotter-button" class="tool" title="Serial Plotter" aria-label="Serial Plotter"></button>
+      <button id="monitor-button" class="tool" title="Serial Monitor" aria-label="Serial Monitor"></button>
+    </div>
+    <div id="compat" class="banner" hidden>This browser does not support Web Serial. You can write and compile sketches, but uploading and the serial monitor need desktop Chrome, Edge or Opera.</div>
+    <main>
+      <nav class="activity" aria-label="Views">
+        <button data-view="sketchbook" title="Sketchbook" aria-label="Sketchbook"></button>
+        <button data-view="boards" title="Boards Manager" aria-label="Boards Manager"></button>
+        <button data-view="libraries" title="Library Manager" aria-label="Library Manager"></button>
+        <button data-view="search" title="Search" aria-label="Search"></button>
+      </nav>
+      <aside id="side" hidden>
+        <header><h2 id="side-title"></h2></header>
+        <div id="side-body"></div>
+      </aside>
+      <section class="center">
+        <div class="tabs" id="tabs"></div>
+        <div id="editor"></div>
+        <div class="splitter" id="splitter" role="separator" aria-orientation="horizontal"></div>
+        <section id="bottom">
+          <div class="bottom-tabs">
+            <button data-bottom="output" class="active">Output</button>
+            <button data-bottom="monitor">Serial Monitor</button>
+            <button data-bottom="plotter">Serial Plotter</button>
+            <span class="spacer"></span>
+            <button id="bottom-close" class="icon-button" aria-label="Close panel">×</button>
+          </div>
+          <div id="output-view" class="view"><pre id="output" aria-live="polite"></pre></div>
+          <div id="monitor-view" class="view" hidden>
+            <div class="monitor-bar">
+              <input id="monitor-input" aria-label="Message to send" />
+              <select id="line-ending" aria-label="Line ending">
+                <option value="">No Line Ending</option>
+                <option value="&#10;">New Line</option>
+                <option value="&#13;">Carriage Return</option>
+                <option value="&#13;&#10;">Both NL &amp; CR</option>
+              </select>
+              <select id="baud" aria-label="Baud rate"></select>
+              <label class="inline"><input type="checkbox" id="autoscroll" />Autoscroll</label>
+              <label class="inline"><input type="checkbox" id="timestamps" />Timestamp</label>
+              <button id="monitor-clear">Clear</button>
+              <button id="monitor-connect" class="primary">Connect</button>
+            </div>
+            <pre id="monitor"></pre>
+          </div>
+          <div id="plotter-view" class="view" hidden>
+            <div class="monitor-bar">
+              <div id="plot-legend" class="legend"></div>
+              <span class="spacer"></span>
+              <label class="inline">Points
+                <select id="plot-window"><option>50</option><option>100</option><option>250</option><option>500</option><option>1000</option></select>
+              </label>
+              <button id="plot-pause">Pause</button>
+              <button id="plot-clear">Clear</button>
+            </div>
+            <canvas id="plot"></canvas>
+          </div>
+        </section>
+      </section>
+    </main>
+    <footer class="statusbar">
+      <span id="cursor"></span>
+      <span id="status-msg"></span>
+      <span class="spacer"></span>
+      <span id="status-board"></span>
+      <a id="source-link" target="_blank" rel="noopener">Source (AGPL-3.0)</a>
+    </footer>
+    <dialog id="dialog"></dialog>
+    <div id="toast" role="status"></div>
+    <input type="file" id="file-import" multiple accept=".ino,.pde,.h,.hpp,.c,.cpp,.S,.txt,.md,.json,.zip" hidden />
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
